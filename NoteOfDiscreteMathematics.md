@@ -1,3 +1,7 @@
+
+
+
+
 # Note of Discrete Mathematics
 
 [TOC]
@@ -500,6 +504,12 @@ $$
 
 证明  $P \wedge \neg P$ = F
 
+$P\leftrightarrow F $是永真式，P是矛盾式（永假式）
+
+
+
+
+
 ### Exercise
 
 $$
@@ -591,4 +601,70 @@ P \wedge F  \\
 \\
 (P \leftrightarrow Q) \leftrightarrow((P \wedge \neg Q) \vee(Q \wedge \neg P))
 $$
+
+
+
+证明永真，可以反证非P矛盾
+
+1. check 是否合法(Validate the formula)
+
+2. solve the formula
+
+
+
+
+
+notes的内容会出现在quiz上，不会在期末
+
+第六部出错）不是连接符
+
+合取范式连接析取子句
+
+CNF ：通过F构建的就是合取范式（但是通过真值表构建复杂度很高）
+
+有开关变量，转化为DNF 之后不成为爆炸（变成3+3），减少了变量
+
+引入的Z 的式子的语意上不一样的，但是可满足性是一样的。
+
+真值表按照一行来算013（看一下）
+
+and起来条件更严格，所以叫做极小项
+
+极大项只有一个F？
+
+
+
+永真属于可满足？
+
+吃多个？用多个变量表示，P1，P2，这和3 用2个bit表示相同。 
+
+P:arrow_right:Q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A
+
+
+
+
+
+
+
+
+
+
 

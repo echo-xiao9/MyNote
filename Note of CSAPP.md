@@ -99,7 +99,13 @@ Bits:\quad 102=51 * 2+0 \\
 \end{array}
 $$
 
-#### Hexadecimal(16进制)
+#### Hexadecimal(16进制)0x 
+
+
+
+
+
+
 
 Use characters **‘0’ to ‘9’ and ‘A’ to ‘F’**，十六和二进制，4个切开转化即可
 
@@ -113,9 +119,7 @@ Use characters **‘0’ to ‘9’ and ‘A’ to ‘F’**，十六和二进�
 
 <img src="Note of CSAPP.assets/image-20200917144212766.png" alt="image-20200917144212766" style="zoom:50%;" />
 
-
-
-
+<img src="Note of CSAPP.assets/截屏2020-09-22 下午3.12.32.png" alt="截屏2020-09-22 下午3.12.32" style="zoom:50%;" />
 
 **内存限制带来的编码问题**
 
@@ -149,48 +153,42 @@ File Inclusion and Macro Substitution（宏替换）
 
 –Can be read and understand by human beings 
 
-•The individual C statements must be translated by *compiler drivers*
+•The individual C statements must be translated by<u>(gcc) *compiler drivers*</u>
 
 –So that the hello program can run on a computer system
 
 
 
+### 编译流程
+
+The C programs  $\rightarrow$ A sequence of low-level *machine-language* instructions $\rightarrow$ object program  $\rightarrow$ a binary disk file(*executable object files*)
+
+![截屏2020-09-22 下午3.17.41](Note of CSAPP.assets/截屏2020-09-22 下午3.17.41.png)
+
+
+
 ![截屏2020-09-17 下午3.31.55](Note of CSAPP.assets/截屏2020-09-17 下午3.31.55.png)
 
-1. **gcc行号列好指的是??**是XX的第一行，也是xx  
+### Boolean Algebra
 
-2. **Binary** **file** **??why** **16****进制？**
+![截屏2020-09-22 下午3.19.45](Note of CSAPP.assets/截屏2020-09-22 下午3.19.45.png)
 
+位运算可以看成是每一位进行bool 代数运算，也可以看成是集合的运算
 
-
-<img src="Note of CSAPP.assets/截屏2020-09-17 下午3.29.24.png" alt="截屏2020-09-17 下午3.29.24" style="zoom:50%;" />
-
-3. <img src="Note of CSAPP.assets/截屏2020-09-17 下午3.31.03.png" alt="截屏2020-09-17 下午3.31.03" style="zoom:50%;" />
-4. 可存在的目标文件
-
-
-
-4. 不讲的不考？？
-
-对
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+> •01101001 { 0, 3, 5, 6 } 定义0在的位，放在一个集合
+>
+> •01010101 { 0, 2, 4, 6 }
+>
+> -  & Intersection 01000001 { 0, 6 }集合交
+>
+> - | Union 01111101 { 0, 2, 3, 4, 5, 6 }集合并
+>
+> - ^ Symmetric difference  00111100 { 2, 3, 4, 5 }
+>
+> - Complement   10101010 { 1, 3, 5, 7 }
+>
+> 
+>
 
 
 
