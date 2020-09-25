@@ -169,7 +169,7 @@ The C programs  $\rightarrow$ A sequence of low-level *machine-language* instruc
 
 ![截屏2020-09-17 下午3.31.55](Note of CSAPP.assets/截屏2020-09-17 下午3.31.55.png)
 
-### Boolean Algebra
+### 位运算Boolean Algebra
 
 ![截屏2020-09-22 下午3.19.45](Note of CSAPP.assets/截屏2020-09-22 下午3.19.45.png)
 
@@ -190,15 +190,124 @@ The C programs  $\rightarrow$ A sequence of low-level *machine-language* instruc
 > 
 >
 
+应用
+
+1. **异或Xor  交换**
+
+```C++ 
+int inplace_swap(int *x, int *y)
+{
+  *x = *x ^ *y;  /* #1 */
+  *y = *x ^ *y;  /* #2 */
+  *x = *x ^ *y;  /* #3 */
+}
+```
+
+<img src="Note of CSAPP.assets/image-20200924142232035.png" alt="image-20200924142232035" style="zoom:50%;" />
+
+2. **异或，取补集**
+
+   •All but the least significant byte of complemented, with the least significant byte left unchanged
+
+   - x ^ ~0xFF
+
+   
+
+3. **取位数，&1111····**
+
+- X & 0xFF =?
+
+  取得最后8位，比如后八位代表了特殊意义。
+
+- 取8，16，32的全1
+
+  ```
+  int x;
+  x=~0;
+  ```
+
+- The least significant byte set to all 1s, and all other bytes of x left unchanged
+  - x | 0xFF
+
+### Logical Operations 
+
+F=0；其他的都是1
+
+> !0x41 --> 0x00
+>
+> !0x00 --> 0x01
+>
+> !!0x41 --> 0x01
+>
+> 0x69 && 0x55 --> 0x01
+>
+> 0x69 || 0x55 --> 0x01
+
+**Short Cut** 
+
+如果能判定真值，停止计算。
+
+1. 避免0分母  a && 5/a
+
+2. 避免空指针 p && *p
+
+3. **异或，判同、判0**
+
+   !(x^y)相同为1，相反为0
 
 
 
+### Shift Operations 
 
+**Left Shift:  x << y**   
 
+x左移y位。超出的就不要了
+$$
+\begin{aligned}
+&\begin{array}{|l|l|}
+\hline \text { Argument } x & 01100010 \\
+\hline<<3 & 00010000 \\
+\hline
+\end{array}\\
+&\begin{array}{|l|l|}
+\hline \text { Argument } x & 10100010 \\
+\hline<<3 & 00010000 \\
+\hline
+\end{array}
+\end{aligned}
+$$
+**Right Shift:  x >> y**
 
+Shift bit-vector x right y p
 
+**逻辑右移**
 
+前面填写0
+$$
+\begin{array}{|l|l|}
+\hline \text { Argument } x & 01100010 \\
+\hline \text { Log. }>>2 & 00011000 \\
+\hline \text { Arith. }>>2 & 00011000 \\
+\hline
+\end{array}\\
+$$
+**算数右移**
 
+看最高位，前面填写的和最高位一样，这个和负数有关，最高位是符号位。
+$$
+\begin{aligned}
+
+&\begin{array}{|l|l|}
+\hline \text { Argument } & 10100010 \\
+\hline \text { Log. }>>2 & 00101000 \\
+\hline \text { Arith. }>>2 & 11101000 \\
+\hline
+\end{array}
+\end{aligned}
+$$
+**移动比加减的优先级更低**
+
+–1<<2 + 3<<4 means 1<<(2 + 3)<<4 
 
 
 
