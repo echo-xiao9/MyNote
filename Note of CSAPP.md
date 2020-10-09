@@ -190,9 +190,7 @@ The C programs  $\rightarrow$ A sequence of low-level *machine-language* instruc
 > 
 >
 
-应用
-
-1. **异或Xor  交换**
+**异或Xor  交换**
 
 ```C++ 
 int inplace_swap(int *x, int *y)
@@ -205,9 +203,25 @@ int inplace_swap(int *x, int *y)
 
 <img src="Note of CSAPP.assets/image-20200924142232035.png" alt="image-20200924142232035" style="zoom:50%;" />
 
+### Mask Operation
+
+1. **设置1，0**
+
+   or T 可以设1，~+or T 设置0
+
+   The least significant byte set to all 1s, and all other bytes of x left unchanged.
+
+   x | 0xFF
+
 2. **异或，取补集**
 
+   0^1=1 1^1=0 所以用1起到了补集的作用
+
+   1^0=1 0^0=0 和原来一样，所以起到了保留的作用
+
    •All but the least significant byte of complemented, with the least significant byte left unchanged
+
+   翻译为:除了最后的一个byte保留不变，其他的都取补集
 
    - x ^ ~0xFF
 
@@ -226,10 +240,14 @@ int inplace_swap(int *x, int *y)
   x=~0;
   ```
 
-- The least significant byte set to all 1s, and all other bytes of x left unchanged
-  - x | 0xFF
+### Logical Operations –&&,||,!
 
-### Logical Operations 
+**性质**
+
+ • View 0 as “False”
+ • Anything nonzero as “True”
+ • Always return 0 or 1
+ • Early termination (short cut)
 
 F=0；其他的都是1
 
@@ -293,7 +311,7 @@ $$
 $$
 **算数右移**
 
-看最高位，前面填写的和最高位一样，这个和负数有关，最高位是符号位。
+前面的看最高位，前面填写的和最高位一样，这个和负数有关，最高位是符号位。
 $$
 \begin{aligned}
 
@@ -309,13 +327,37 @@ $$
 
 –1<<2 + 3<<4 means 1<<(2 + 3)<<4 
 
+### bitCount问题
 
+```C++
+int bitCount(int x) {
+	int m1 = 0x11 | (0x11 << 8); 
+  int mask = m1 | (m1 << 16); 
+  int s = x & mask;
+	s += x>>1 & mask; 
+	s += x>>2 & mask; s += x>>3 & mask;
+  
+  /* Now combine high and low order sums */ 
+  s = s + (s >> 16);
+  /* Low order 16 bits now consists of 4 sums.
+  Split into two groups and sum */
+	mask = 0xF | (0xF << 8); 0F0F
+	s = (s & mask) + ((s >> 4) & mask); 
+  return (s + (s>>8)) & 0x3F;
+  }
+```
 
+本质：1. 用 & 一步一步把1取出来 2. 4个4个，两个两加和
 
+![IMG_9B0E93947AC4-1](Note of CSAPP.assets/IMG_9B0E93947AC4-1.jpeg)
 
+老鼠喂药问题
 
+给10只老鼠和1000瓶药水，1瓶是毒药。
 
+解法：老鼠的死亡、活着是0-1的状态，可以用10个bit进行编码。一共有2^10=1024的可能性。每个药水对应一个编码，最后映射一下结果即可。
 
+![截屏2020-09-27 下午9.38.06](Note of CSAPP.assets/截屏2020-09-27 下午9.38.06.png)
 
 
 
@@ -512,3 +554,22 @@ question: svn 搜出来好多，怎么找呢？
 ![截屏2020-09-21 下午7.21.04](Note of CSAPP.assets/截屏2020-09-21 下午10.18.03.png)
 
 ![截屏2020-09-21 下午10.18.18](Note of CSAPP.assets/截屏2020-09-21 下午10.18.18.png)
+
+### 微内核
+
+
+
+
+
+宏内核问题
+
+1. all 有最高权限，导致有一个漏洞可以掌握所有
+2. 太庞大
+
+
+
+
+
+task thread 
+
+全局命名，Insecure 

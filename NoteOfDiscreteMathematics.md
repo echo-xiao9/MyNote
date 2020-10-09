@@ -9,10 +9,9 @@
 ### 本课词汇
 
 1. Propositional 命题
-
 2. semantic 语义的
-
 3. tautology 重言式
+4. UNSAT    矛盾式
 
 ## 1. Overview
 
@@ -93,6 +92,8 @@ https://oc.sjtu.edu.cn/courses/24410
 
 https://rise4fun.com/Dafny/tutorial
 
+软件大楼4号楼（ipads 实验室）门口数第二个
+
 ### Three Parts of CDM(*)
 
  Part I. Reasoning. (*8 ~ 9 Weeks*)
@@ -131,8 +132,6 @@ i = i >> n ;  相当于 i = i / ( 2 ^ n )
 比如0x12&0x23 转为二进制为:B00010010&B00100011，按位计算结果为B00000010，
 即结果为0x02
 
-
-
 ^
 
 两个二进制操作数对应位相同为0，不同为1;
@@ -149,8 +148,6 @@ void swap(int a, int b)
 	a ^= b;
 }
 ```
-
-
 
 <u>参考：</u>
 
@@ -612,6 +609,51 @@ $$
 
 
 
+### Normal Form(范式)
+
+**Conjunction Normal Form**(合取范式)
+
+1. 去掉$\leftrightarrow 、\leftarrow、\rightarrow$
+2. 去掉非
+3. 使用分配率
+
+**Disjunction Normal Form**(析取范式)
+
+同上
+
+**Principal Normal Form**(主范式)
+
+每个子句p,q只能出现一次
+
+**Principal Disjunction Normal Form**(主析取范式)
+
+and起来条件更严格，所以叫做极小项
+
+要构造析取子句，要and 上，并且P要and QV$\neg Q$ Q要and PV$\neg P$ 
+$$
+\begin{aligned}
+& P \rightarrow Q \\
+=& \neg P \vee Q \\
+=&(\neg P \wedge(Q \vee \neg Q)) \vee Q \\
+=&(\neg P \wedge Q) \vee(\neg P \wedge \neg Q) \vee Q \\
+=&(\neg P \wedge Q) \vee(\neg P \wedge \neg Q) \vee(Q \wedge(P \vee \neg P)) \\
+=&(\neg P \wedge Q) \vee(\neg P \wedge \neg Q) \vee(P \wedge Q) \vee(\neg P \wedge Q) \\
+=&(\neg P \wedge \neg Q) \vee(\neg P \wedge Q) \vee(P \wedge Q) \\
+=& m_{0} \vee m_{1} \vee m_{3}=V_{0 ; 1 ; 3}
+\end{aligned}
+$$
+**Principal Conjunction Normal Form**(主合取范式)
+$$
+\begin{aligned}
+& P \wedge Q \\
+=&(P \vee(Q \wedge \neg Q)) \wedge(Q \vee(P \wedge \neg P)) \\
+=&(P \vee Q) \wedge(P \vee \neg Q) \wedge(Q \vee P) \wedge(Q \vee \neg P) \\
+=&(\neg P \vee Q) \wedge(P \vee \neg Q) \wedge(P \vee Q) \\
+=& M_{1} \wedge M_{2} \wedge M_{3}=\wedge_{1 ; 2 ; 3}
+\end{aligned}
+$$
+
+
 
 
 ### SAT Solver 
@@ -622,9 +664,87 @@ $$
 
 计算机确定可满足性的两步：
 
-Step 2.1. **Validate** the formula.验证合法性
+Step 1. 把程序变成合式公式
 
-Step 2.2. **Solve** the formula.
+Step 2. **Validate** the formula.验证合法性(WFF 判定)
+
+Step 3. **Solve** the formula.（DPLL算法）
+
+
+
+#### 把程序变成合式公式
+
+1. 程序本质是一个状态的转变A0->A1，计算机看成是状态机。
+
+```c++
+void swap(bool& a, bool& b)
+{a = a ^ b; b = b ^ a; a = a ^ b;
+}
+```
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-09-25 下午10.58.57.png" alt="截屏2020-09-25 下午10.58.57" style="zoom:33%;" />
+
+
+$$
+\begin{array}{l}
+(A 1 \leftrightarrow(A 0 \wedge \neg B 0) \vee(\neg A 0 \wedge B 0)) \wedge\quad \leftrightarrow表示等值 \\
+(B 1 \leftrightarrow B 0) \wedge \\
+(A 2 \leftrightarrow A 1) \wedge \\
+(B 2 \leftrightarrow (A 1 \wedge \neg B 1) \vee(\neg A 1 \wedge B 1) \\
+(A 3 \leftrightarrow ( A 2 \wedge \neg B 2) \vee(\neg A 2 \wedge B 2)) \wedge \\
+(B 3 \leftrightarrow B 2) \rightarrow \\
+(A 3 \leftrightarrow B 0) \wedge(A 0 \leftrightarrow B 3)\quad 这是要实现的内容
+\end{array}
+$$
+2. 要证明重言式，即证明非矛盾式
+
+3. 相同的变量直接替代
+
+![截屏2020-10-09 下午3.50.23](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午3.50.23.png)
+
+3. 条件if
+
+   
+
+   ![截屏2020-10-09 下午4.06.33](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.06.33.png)
+
+**重点：**
+$$
+\begin{array}
+& X_{3} &=(A\rightarrow X_{1})\wedge(A\rightarrow X_{2}) \\
+    &=(A \wedge X 1) \vee(\neg A \wedge X 2)
+\end{array}
+$$
+
+
+![截屏2020-10-09 下午4.07.24](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.07.24.png)
+$$
+\begin{array}{l}
+\text{结果}：\\
+X 1 \wedge \neg X 2 \wedge Y 4 \wedge \neg Y 5 \wedge \\
+(X 3 \leftrightarrow((A \wedge X 1) \vee(\neg A \wedge X 2))) \wedge \\
+(Y 6 \leftrightarrow((B \wedge Y 4) \vee(\neg B \wedge Y 5))) \\
+\rightarrow \\
+(X 3 \vee Y 6)
+\end{array}
+$$
+A=F, B=F can satisfy it. So the assertion will fail.
+
+4. 整数，每一位当成一个命题变量
+
+![截屏2020-10-09 下午4.16.25](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.16.25.png)
+
+5. **Operators**操作符
+
+   所有操作符都可以表示为位运算，逻辑电路就是这么做的：
+
+   Logical operators, bit operators：&,|,^,>>,!,......
+
+   Relational operators：\、>,<,==
+
+6. 有限循环：扒开，无限的目前在这里没有解决
+
+   
 
 #### WFF 的判定算法
 
@@ -658,33 +778,173 @@ Step 2.2. **Solve** the formula.
 2. 通过规则进行推导，不用猜了
 3.  单个的先赋值为T
 
+1.  **Decide Rule**
 
+如果我们从未认定过某个 literal 的真值，那么这个 literal 就叫做 undefined literal。 Decide rule 是说，选取一个 undefined literal，猜测它的真值，并标记这个 literal 为 decision literal。例如对于 A ∨ ¬B, B ∨ ¬C, C ∨ A，可以按照 decide rule 猜测 A 的真值为 F，并标 记 A 为 decision literal。注意，这里如果先选择 B 或者 C 猜测真值也是可以的，另外先猜 测 A 的真值是 T 也是可以的。
+
+2. **Unitpropagate Rule**
+
+某个 literal 有了真值后，就可以推导出其它一部分 literal 的真值。按照 unitpropagate rule，A ∨ ¬B, B ∨ ¬C, C ∨ A 中 A 的真值是 F，那么可以推导出 B 的真值是 F，因为当且 仅当 B 的真值是 F 的时候 A ∨ ¬B 的真值才能是 T，整个 CNF 公式的真值才有可能是 T。 接着可以发现，我们还可以推导出 C 的真值是 F，因为当前情况下当且仅当 C 的真值是 F 的时候 B ∨ ¬C 的真值才能是 T，整个 CNF 公式的真值才有可能是 T。
+
+3.  **Backtrack Rule**
+
+Backtrack rule 是说如果发现当前 CNF 的某个子句真值是 F，也就是说整个 CNF 的真 值已经是 F 的时候，说明对某个 literal 的赋值错了，要进行回溯，找到最近的一个 decision literal 重新赋值，这个真值为 F 的子句称为 conflicting clause。在这个例子中，A 的真值是 F，B 的真值是 F，C 的真值是 F，发现子句 C ∨ A 真值是 F，进行回溯，目前最近的一个 decision literal 是 A，A 一开始猜测的真值是 F，按照 backtrack rule，重新猜测 A 的真值 是 T，并标记 A 为 non-decision literal，表明 A 的两种真值都考虑过了。由于 B 和 C 的 真值都是在猜测 A 真值为 F 的前提下推导出来的，所以现在 B 和 C 的真值无效了，要重 新按照 DPLL 的这些规则推导。
+
+4.  **Fail Rule**
+
+在上面的例子中，由于找到 A 是 decision literal，所以才能使用 backtrack rule 进行回 溯。Fail rule 是说如果出现了 conflicting clause 但是又找不到 decision literal，说明这个公 式是不可满足的，直接输出 unsat。
+
+5.  **Pureliteral Rule**
+
+仔细观察例子 A ∨ ¬B, B ∨ ¬C, C ∨ A，我们发现其中只有 A 没有 ¬A，那么我们可以 直接认为 A 的真值是 T，因为 A 是 T 的话那所有包含 A 的子句的真值就都是 T 了，如 果在 A 真值是 T 的情况下公式真值还是 F，那么即使把 A 的真值改成 F 公式的真值也还 是 F。
 
 考试写算法，要把后面的XXrules （可以缩写Unit、 Pure）写一下
 
-**举例：**
-
-![截屏2020-09-25 上午10.39.58](NoteOfDiscreteMathematics.assets/截屏2020-09-25 上午10.39.58.png)
 
 
+### （Reverse） Polish notation(（逆）波兰表达式)
 
-
+![截屏2020-10-09 上午10.19.00](NoteOfDiscreteMathematics.assets/截屏2020-10-09 上午10.19.00.png)
 
 
 
-矛盾
-
- n
 
 
+**Reverse polish notation**(逆波兰表达式)
 
-notes的内容会出现在quiz上，不会在期末
+后序遍历
 
-第六部出错）不是连接符
+![截屏2020-10-09 上午10.20.24](NoteOfDiscreteMathematics.assets/截屏2020-10-09 上午10.20.24.png)
 
-合取范式连接析取子句
 
-CNF ：通过F构建的就是合取范式（但是通过真值表构建复杂度很高）
+
+## 2.谓词逻辑
+
+### 概念
+
+1. **individuals : 个体词**
+
+2. **discourse : 论域**
+
+3. **Predicate：谓词**
+
+   1. 谓词有点像形容词，描述了某个性质，用大写字母表示 eg. STRONGER（Tom, Jerry）
+   2. P(X1,X2,...,Xn) n-ary predicate ，P 没有具体所指，P是**谓词变项**，没办法呢判断，所以无法判断FT，X1-Xn是**个体变项**，当X1-Xn有具体所指的时候，变成**命题**，可以判断。
+   3. 7=5 "="也是一个特殊的谓词常项
+
+4. **Funcftion : 函数**
+
+   输入&输出： 都是个体词，表示个体词到个体词的映射关系 bestfriend(Bob)=Alice
+
+    bestfriend(Bob) 不是命题，但是 bestfriend(Bob)=Alice是命题，=是谓词
+
+   |               |      |      |      |
+   | ------------- | ---- | ---- | ---- |
+   | connectivives |      |      |      |
+   | Predicate     |      |      |      |
+   |               |      |      |      |
+
+   
+
+5. **量词：**
+
+   1. The Universal Quantifier(全称量词)：任意
+
+      (∀ x)(f(x))   x:约束变元
+
+      当论域为空时，(∀ x)(f(x))  =T
+
+   2. The Existential Quantifier(存在量词)：
+
+      (∃x)(f(x)) 
+
+      当论域为空时，(∃ x)(f(x))  =F
+
+   3. (∀ x)f(x)VQ (x)  ，f(x)是x的辖域，Q（x）中 的x是自由变元。
+
+   4. 限制自由变元的方法：
+
+      1. 变成constants
+      2. 增加量词
+
+   5. (∀/∃ x)(∀/∃ y)P(x,y) = (∀/∃ x)( (∀/∃ y)P(x,y) )
+
+   6. (∀ x)f(x) =f(1)$\wedge$ f(2)$\wedge$ ...(都满足)
+
+      (∃ x)f(x) =f(1)$\vee$ f(2)$\vee$ ...（只要一个满足）
+
+      论域为{1，2}
+
+      - (∃ x) (∀ y)f(x,y) =(P(1,1)$\wedge$P(1,2))V((P(2,1)$\wedge$P(2,2))
+      - (∀ x) (∃ y)f(x,y) =(P(1,1)VP(1,2))$\wedge$((P(2,1)VP(2,2))
+      - 不可交换
+      - (∃ x) (∀ y)f(x,y)  推出(∀ x) (∃ y)f(x,y) ，不可反推。语义上理解。（PPT有推导）
+
+   ### 命题逻辑是特殊的谓词
+
+   P ,Q 看出谓词？？
+
+### 合式公式
+
+合式公式不一定是命题，命题一定是合式公式。
+
+书写规范：（PPT）
+
+**定义：**
+
+term:个体词/函数
+
+原子谓词公式：参数都是term
+
+### 自然语句的形式化
+
+1. 所有的有理数都是实数
+
+   (∀ x) （P（x）->Q(x)）
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## question
+
+X1=1^  是个体变相？？？、
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 有开关变量，转化为DNF 之后不成为爆炸（变成3+3），减少了变量
 
@@ -692,39 +952,15 @@ CNF ：通过F构建的就是合取范式（但是通过真值表构建复杂度
 
 真值表按照一行来算013（看一下）
 
-and起来条件更严格，所以叫做极小项
-
 极大项只有一个F？
 
 
 
 永真属于可满足？
 
-吃多个？用多个变量表示，P1，P2，这和3 用2个bit表示相同。 
-
-P:arrow_right:Q
-
 strawman 算法 最直觉？？
 
 回溯了之后A =T --》A =F ,A 就不是decision literal 
-
-证明F ：证明永真or 矛盾
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-A
 
 
 
