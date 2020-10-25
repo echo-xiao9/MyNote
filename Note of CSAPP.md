@@ -334,8 +334,9 @@ int bitCount(int x) {
 	int m1 = 0x11 | (0x11 << 8); 
   int mask = m1 | (m1 << 16); 
   int s = x & mask;
-	s += x>>1 & mask; 
-	s += x>>2 & mask; s += x>>3 & mask;
+	s += x>>1 & mask;
+	s += x>>2 & mask;
+  s += x>>3 & mask;
   
   /* Now combine high and low order sums */ 
   s = s + (s >> 16);
@@ -359,7 +360,81 @@ int bitCount(int x) {
 
 ![截屏2020-09-27 下午9.38.06](Note of CSAPP.assets/截屏2020-09-27 下午9.38.06.png)
 
+### Byte Ordering
 
+Little Endian
+ – Least significant byte has lowest address
+
+Big Endian
+ – Least significant byte has highest address
+
+Bi-Endian
+
+–  Machines can be configured to operate as either little- or big-endian
+
+–  Many recent microprocessors
+
+<img src="Note of CSAPP.assets/截屏2020-10-21 下午10.26.08.png" alt="截屏2020-10-21 下午10.26.08" style="zoom:50%;" />
+
+<img src="Note of CSAPP.assets/截屏2020-10-21 下午10.26.23.png" alt="截屏2020-10-21 下午10.26.23" style="zoom:50%;" />
+
+## Endianness and Character Data
+
+Single-byte character data such as ASCII and Latin-1 is not affected by Endianness. If you store any ASCII character string in memory, it always looks the same, <u>no matter what the Endianness of the hardware,</u> since each character is one byte long and the start character of the string is always stored at the lowest memory location. For the string "abcd", the "a" is stored "first", i.e.
+
+字符串的存储和endianness无关，因为是单个char存储的
+
+<img src="Note of CSAPP.assets/截屏2020-10-22 上午8.31.25.png" alt="截屏2020-10-22 上午8.31.25" style="zoom:50%;" />
+
+
+
+
+
+
+
+
+
+### How to Access an Object（program）
+
+如何访问一个程序？
+
+1. 每个程序获得一段虚拟内存空间
+2. C compiler 产生机器级别的program
+3. C 指针的值是这段地址的第一个值（地址最小，但是具体的byte的值是看大头还是小头）
+
+<img src="Note of CSAPP.assets/截屏2020-10-21 下午10.31.17.png" alt="截屏2020-10-21 下午10.31.17" style="zoom:50%;" />
+
+### C语言补充
+
+1. sizeof():	32位，64位的普适性代码
+
+```c
+void show_int(int x) { 
+  show_bytes((byte_pointer) &x, sizeof(int));
+}
+```
+
+使用sizeof(int)就在两个机器的运行结果都一样了。
+
+2. typedef
+
+### Representing Strings
+
+```c
+int strlen(char *s) {
+char *p = s ;
+while (*p != ‘\0’) p++ ;
+return p-s ; }
+```
+
+```C
+int trim(char s[]) {
+int n;
+for (n = strlen(s)-1; n >= 0; n--)
+	if ( s[n] != ‘ ‘ && s[n] != ‘\t’ && s[n] != ‘\n’)break; 
+s[n+1] = ‘\0’;
+return n }
+```
 
 
 
@@ -519,11 +594,32 @@ Package resource list for APT:
 
 每行是一个源 Dist:版本，squeeze 是debian8的名字
 
+#### cp命令复制文件
+
+使用pwd 命令查明当前路径
+
+假设复制源目录 为 dir1 ,目标目录为dir2。
+如果dir2目录不存在，则可以直接使用
+cp -r dir1 dir2
+即可。
+如果dir2目录已存在，则需要使用
+cp -r dir1/. dir2
 
 
+举例：
 
+```bash
+parallels@debian-gnu-linux-vm:~/icslabs/lab1$ cp -r /home/parallels/icslabs/lab1 /home/parallels/lab1
+```
 
+删除
 
+```bash
+# 删除整个文件夹
+ rm  -r  homework  
+# 删除文件
+ rm  test.txt 
+```
 
 
 
@@ -533,9 +629,49 @@ Package resource list for APT:
 
 /etc/apt/sources.list
 
-SVN 版本控制
+### SVN 版本控制
 
-#### top&htop
+进入
+
+```
+svn co svn://ipads.se.sjtu.edu.cn/ics-se19/ics518431910002 icslabs --username=ics518431910002
+
+cd icslabs
+```
+
+查看状态
+
+```bash
+svn status
+```
+
+提交
+
+```bash 
+ svn ci helloworld.c --message="finish helloworld program."
+```
+
+版本回退
+
+```bash
+svn up -r [版本号，写的时候去掉方括号]
+```
+
+**bug：**
+
+https://forum.vivaldi.net/topic/20688/annoying-enter-password-to-unlock-your-login-keyring-on-debian-linux/6
+
+> **[ugly](https://forum.vivaldi.net/user/ugly)** [2017年9月8日 下午9:22](https://forum.vivaldi.net/post/159315)
+>
+> 
+>
+> This is what I did to solve the issue on Linux Mint. I saw this somewhere else, and I'm no expert, so I don't know if this is the safest thing.
+>
+> rm -v ~/.local/share/keyrings/*.keyring
+>
+> Next restart when prompted for keyring click continue and leave everything blank.
+
+#### top & htop
 
 **top**
 
@@ -555,21 +691,104 @@ question: svn 搜出来好多，怎么找呢？
 
 ![截屏2020-09-21 下午10.18.18](Note of CSAPP.assets/截屏2020-09-21 下午10.18.18.png)
 
-### 微内核
 
 
+### Debugging
 
+gdb
 
+studio
 
-宏内核问题
+```
+#include "stdio.h"
+int main()
+{
+    float a=1;
+    printf("%f",a);
+    
+}
+```
 
-1. all 有最高权限，导致有一个漏洞可以掌握所有
-2. 太庞大
+exit 退出root
 
+### Docker
 
+```bash 
+docker start ubuntu
 
+docker exec -it ubuntu /bin/bash
 
+```
 
-task thread 
+## lab1
 
-全局命名，Insecure 
+### README
+
+The ICS: Data Lab
+Directions to Students
+
+Your goal is to modify your copy of bits.c so that it passes all the
+tests in btest without violating any of the coding guidelines.
+
+***********************************************************
+1. Modifying bits.c and checking it for compliance with dlc
+***********************************************************
+
+Carefully read the instructions in the bits.c file before you
+start. These give the coding rules that you will need to follow if you
+want full credit.
+
+Use the dlc compiler (./dlc) to automatically check your version of
+bits.c for compliance with the rules:
+
+        unix> ./dlc bits.c
+
+dlc returns silently if there are no problems with your code.
+Otherwise it prints messages that flag any problems.  Once you have a
+legal solution, you can test it for correctness using the ./btest
+program.
+
+*************************************
+2. Testing for correctness with btest
+*************************************
+
+The Makefile in this directory compiles your version of bits.c with
+additional code to create a program (or test harness) named btest.
+
+Give the command:
+
+        unix> make
+
+to compile the code.
+
+Run the program with the command:
+
+        unix> ./btest [optional command line arguments]
+
+When moving from one platform to another, you want to get rid of the
+old version of btest and generate a new one.  Use the commands:
+
+        unix> make clean
+
+*******************
+3. What btest does
+*******************
+
+Btest tests your procedures for correctness by running a number of test
+cases.  It does not guarantee exhaustive evaluation.  In addition, it does
+not check your code for compliance with the coding guidelines.  Use dlc to
+do that.
+
+If you think the functions provided in btest are incorrect send mail
+to the lead person for this assignment.
+
+Here are the command line options for btest:
+   -e N     Limit number of errors to report for single function to N
+            (Default unbounded)
+   -f Name  Check only the named function
+   -g       Prints concise report (implies -v 0 and -e 0)
+   -h       Print the list of options
+   -v N     Set verbosity to level N
+            N=0 Only give final scores
+            N=1 Also report individual correctness scores (default)
+

@@ -196,8 +196,6 @@ return i; }
 
 2. A **mathematical proof** is an argument that demonstrates why a <u>mathematical</u> statement is true, following the rules of mathematics. 
 
-
-
 3. A **proposition(命题)** is a statement that is, by itself, either true or false.
 
    > Questions ，commands, exclamations are not propositions.
@@ -642,6 +640,8 @@ $$
 =& m_{0} \vee m_{1} \vee m_{3}=V_{0 ; 1 ; 3}
 \end{aligned}
 $$
+
+
 **Principal Conjunction Normal Form**(主合取范式)
 $$
 \begin{aligned}
@@ -653,7 +653,7 @@ $$
 \end{aligned}
 $$
 
-
+**由于永真式没有成假指派，所以永真式没有主合取范式。为方便起见，将其记为T即可**
 
 
 ### SAT Solver 
@@ -765,20 +765,34 @@ A=F, B=F can satisfy it. So the assertion will fail.
 5. 如果 f=(¬Q)，那么给 f 所在的叶节点新加一个子节点，存放 Q。转步骤 2
 6. 现在令 f=(F)，从左到右扫描 F，直到找到第一个非空表达式 A，使得 A 的左括号数 量和右括号数量相等。如果找不到这样的 A，那么返回 false。
 7. 如果 f=(A ⊙ B), ⊙ ∈ {→, ↔, ∨, ∧}，那么给 f 所在的叶子节点新加两个子节点，一个 存放 A，一个存放 B。转步骤 2。
-8. 返回 false。
+8. 返回 false
 
 
 
-#### DPLL算法(求可满足的解释)
+#### DPLL算法(求可满足的解释)(肯定会考！！)
 
 核心：减少搜索空间
 
 
 1. 尝试失败->剪枝->回溯
 2. 通过规则进行推导，不用猜了
-3.  单个的先赋值为T
+3. 单个的先赋值为T
 
-1.  **Decide Rule**
+**使用CNF不用DNF的原因：**
+
+1. 有开关变量，转化为DNF 之后不成为爆炸（变成3+3），减少了变量，转化的复杂度是多项式复杂度，没有开关变量无论是CNF还是DNF都是指数的
+
+2. 引入的Z 的式子的语意上不一样的，但是可满足性是一样的。
+
+3. $$
+   \begin{array}{l}
+   (Z \rightarrow A 1 \wedge A 2 \wedge A 3) \wedge 
+   (\neg Z \rightarrow B 1 \wedge B 2 \wedge B 3)
+   \end{array}
+   $$
+
+
+1. **Decide Rule**
 
 如果我们从未认定过某个 literal 的真值，那么这个 literal 就叫做 undefined literal。 Decide rule 是说，选取一个 undefined literal，猜测它的真值，并标记这个 literal 为 decision literal。例如对于 A ∨ ¬B, B ∨ ¬C, C ∨ A，可以按照 decide rule 猜测 A 的真值为 F，并标 记 A 为 decision literal。注意，这里如果先选择 B 或者 C 猜测真值也是可以的，另外先猜 测 A 的真值是 T 也是可以的。
 
@@ -818,49 +832,96 @@ Backtrack rule 是说如果发现当前 CNF 的某个子句真值是 F，也就�
 
 
 
-## 2.谓词逻辑
+
+
+
+
+## 3.Deduction 推理
+
+推理形式：
+
+![截屏2020-10-09 下午4.25.14](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.25.14.png)
+
+重言蕴涵：$A \Rightarrow B$
+
+若存在一些命题变量，使得A为T 的情况B一定是T，$A \rightarrow B$为永真，$A \Rightarrow B$为命题表达式（非命题）
+
+1) If 𝐴 ⟹ 𝐵, 𝐴 is a tautology, then 𝐵 is a tautology.
+
+2) If 𝐴 ⟹ 𝐵, 𝐵 ⟹ 𝐴, then 𝐴 = 𝐵.
+
+3) If 𝐴 ⟹ 𝐵, 𝐵 ⟹ 𝐶, then 𝐴 ⟹ 𝐶.
+
+4) If 𝐴 ⟹ 𝐵, 𝐴 ⟹ 𝐶, then 𝐴 ⟹ 𝐵 ∧ 𝐶. 
+
+5) If 𝐴 ⟹ 𝐶, 𝐵 ⟹ 𝐶, then 𝐴 ∨ 𝐵 ⟹ 𝐶.
+
+### 推理规则
+
+1. $\neg(P \rightarrow Q) \Rightarrow P$
+   $\neg(P \rightarrow Q) \Rightarrow \neg Q$
+2. 分离规则/假言推理hypothetical reasoning：$P \wedge(P \rightarrow Q) \Rightarrow Q$
+3. 三段论Syllogism:$(P \rightarrow Q) \wedge(Q \rightarrow R) \Rightarrow P \rightarrow R$
+4. 前提引入规则:assumptions/premise
+5. 代入规则Substitution rule:对于永真式可以进行任意的替换
+6. 置换规则Replacement rules: 表达式可以替换成等价的表达式（真值表相同)
+7. 条件证明规则:𝑨 ∧ 𝑩 ⟹ 𝑪 𝒊𝒇𝒇 𝑨 ⟹ 𝑩 → 𝑪.
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.40.29.png" alt="截屏2020-10-09 下午4.40.29" style="zoom:50%;" />
+
+### Resolution Reasoning(归结推理法)
+
+Because𝑨⟹𝑩iff𝑨∧¬𝑩 isa contradiction. We can prove 𝑨 ∧ ¬𝑩 is a contradiction.
+
+
+
+## 4.谓词逻辑
+
+引入这个可以解决整数一位一位的繁杂情况。<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.45.42.png" alt="截屏2020-10-09 下午4.45.42" style="zoom:50%;" />
 
 ### 概念
 
 1. **individuals : 个体词**
 
-2. **discourse : 论域**
+2. **discourse : 论域** The range of individuals is domain of discourse(论域).
 
 3. **Predicate：谓词**
 
+   def:Predicates describe properties of individuals(个体词)
+
    1. 谓词有点像形容词，描述了某个性质，用大写字母表示 eg. STRONGER（Tom, Jerry）
-   2. P(X1,X2,...,Xn) n-ary predicate ，P 没有具体所指，P是**谓词变项**，没办法呢判断，所以无法判断FT，X1-Xn是**个体变项**，当X1-Xn有具体所指的时候，变成**命题**，可以判断。
-   3. 7=5 "="也是一个特殊的谓词常项
+
+   2. P(X1,X2,...,Xn) n-ary predicate ，P 没有具体所指(个体是变xiang)，P是**谓词变项**，所以无法判断FT，X1-Xn是**个体变项**，当X1-Xn有具体所指的时候，变成**命题**，可以判断。
+
+      **注意：**STRONGER(TOM，JERRY)，STRONGER is a predicate constant.(谓词常项),Tom and Jerry are
+
+      individual constants.(个体常项)
+
+   4. 7=5 "="也是一个特殊的谓词常项
 
 4. **Funcftion : 函数**
 
-   输入&输出： 都是个体词，表示个体词到个体词的映射关系 bestfriend(Bob)=Alice
+   输入&输出： **都是个体词**，表示个体词到个体词的映射关系 bestfriend(Bob)=Alice
 
     bestfriend(Bob) 不是命题，但是 bestfriend(Bob)=Alice是命题，=是谓词
 
-   |               |      |      |      |
-   | ------------- | ---- | ---- | ---- |
-   | connectivives |      |      |      |
-   | Predicate     |      |      |      |
-   |               |      |      |      |
-
-   
+   ![截屏2020-10-09 下午4.49.46](NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午4.49.46.png)
 
 5. **量词：**
 
-   1. The Universal Quantifier(全称量词)：任意
+   1. **The Universal Quantifier(全称量词)：**任意
 
-      (∀ x)(f(x))   x:约束变元
+      (∀ x)(f(x))   x:**约束变元**
 
-      当论域为空时，(∀ x)(f(x))  =T
+      当论域为空时，(∀ x)(f(x))  = T
 
-   2. The Existential Quantifier(存在量词)：
+   2. **The Existential Quantifier(存在量词)：**
 
       (∃x)(f(x)) 
 
       当论域为空时，(∃ x)(f(x))  =F
 
-   3. (∀ x)f(x)VQ (x)  ，f(x)是x的辖域，Q（x）中 的x是自由变元。
+   3. (∀ x)F(x)VQ (x)  ，F(x)是x的**辖域**，F（x）中的x 是约束变元，Q（x）中 的x是**自由变元。**
 
    4. 限制自由变元的方法：
 
@@ -880,21 +941,43 @@ Backtrack rule 是说如果发现当前 CNF 的某个子句真值是 F，也就�
       - 不可交换
       - (∃ x) (∀ y)f(x,y)  推出(∀ x) (∃ y)f(x,y) ，不可反推。语义上理解。（PPT有推导）
 
-   ### 命题逻辑是特殊的谓词
+   ### 命题逻辑是特殊的谓词逻辑
 
-   P ,Q 看出谓词？？
+   - 命题逻辑可以看作是零阶逻辑，P Q 可以看成是0元谓词。
 
-### 合式公式
+   - 命题逻辑是一种比较简单，泛泛的逻辑。比如令命题A表示“小明喜欢数学”。
 
-合式公式不一定是命题，命题一定是合式公式。
+   - 而谓词逻辑，**是将命题逻辑表达不出来的逻辑继续细化**，比如A（x,y）表示x喜欢y，则“小明喜欢数学”可以表示为A（小明，数学）
 
-书写规范：（PPT）
+   <u>命题只能表示F。T 是bit，要把一个事物拆分，然后判断每一个部分的真值。</u>
 
-**定义：**
+   <u>然而谓词引入了个体词，类型之间的关系，而且引入了函数，可以把谓词相互转化，加强了阐述能力。</u>
 
-term:个体词/函数
 
-原子谓词公式：参数都是term
+
+
+
+### Well-formed Formula(合式公式)
+
+1.  **Terms**are expressions generated from the individuals by the functions.
+
+2. An **atomic formula**(原子谓词公式) 参数都是term
+
+**INDUCTIVE DEFINITION of WFF**
+
+1). Every atomic formula is in WFF.
+
+2). If A and B are WFFs, so are ¬A , (A ∧ B), (A ∨ B), (A → B), and (A ↔ B). And there is no variable **which is bounded in one wff and free in the other wff.**
+
+3). If A is a WFF and x is free in A, then **（∀x） A, （∃x） A** are wffs.
+
+ 4). No expression is WFF unless forced by 1), 2) or 3).
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午5.02.40.png" alt="截屏2020-10-09 下午5.02.40" style="zoom:50%;" />
+
+
+
+
 
 ### 自然语句的形式化
 
@@ -902,7 +985,228 @@ term:个体词/函数
 
    (∀ x) （P（x）->Q(x)）
 
-   
+
+
+### Validity(有效性)
+
+interpretation(解释) ：解释即为对于变项的赋值，P(X) = STRONG(x),更像是赋了一个语义
+
+**valid ：**If a formula is always true under any interpretations, it is universally valid $($ 普遍有效 $) .(\forall x)(P(x) \vee \neg P(x))$
+
+**satisfiable：**If a formula is true under some interpretation, it is satisfiable (可满足）$(\forall x)(P(x)$ 
+
+当解释P（x）为 X>0
+
+**unsatisfiable：**If a formula is always false under any interpretations, it is unsatisfiable
+(不可满足的 $) .(\forall x)(P(x) \wedge \neg P(x))$
+
+
+
+![截屏2020-10-14 上午10.56.19](NoteOfDiscreteMathematics.assets/截屏2020-10-14 上午10.56.19.png)
+
+**1) P is universally valid iff ¬P is unsatisfiable**
+
+**2) P is satisfiable iff ¬P is not universally valid**
+
+<u>**注意：P可满足的反面是：非P不是永真**</u>
+
+### Decision Problem(判定问题)
+
+- Predicate logic is not decidable
+- Predicate logic with finite domain is decidable
+- Formula with only unary predicate variable is decidable
+- 命题逻辑是可判定的（真值表）
+- The following forms are decidable
+
+$$
+\begin{array}{l}
+\left(\forall x_{1}\right) \ldots\left(\forall x_{n}\right) P\left(x_{1}, \ldots, x_{n}\right) \\
+\left(\exists x_{1}\right) \ldots\left(\exists x_{n}\right) P\left(x_{1}, \ldots, x_{n}\right)
+\end{array}
+$$
+
+### Deduction Formula(推理公式)
+
+举例：反推P（x）和Q（x）中的x 不一定是同一个x
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-17 下午5.08.22-2925747.png" alt="截屏2020-10-17 下午5.08.22" style="zoom:33%;" />
+
+
+
+**全称量词引入规则**
+
+(1)$P(x)$
+(2)$(\forall x）P(x) $
+
+<u>条件：如果x 在P中都是自由变元（这样才能说明任意性），就可以引入任意</u>
+
+**存在量词引入规则**
+
+(1)$P(c)$
+(2)$(\exists x）P(x) $
+
+$P(c) \Rightarrow(\exists x) P(x)$
+
+c是一个个体常项，对于一个常项成立，那么对于变项一定有一个是成立的
+
+<u>条件：需要限制 x 不出现在P(c)中</u>  虽然给出了反例，但是怎么去理解呢？
+
+**任意量词消去原则**
+
+$(\forall x) P(x) \Rightarrow P(y)$或者 $(\forall x) P(x) \Rightarrow P(c)$
+
+<u>条件：y不可以在P(x)的约束(任意存在)中出现</u>，虽然给出了反例，但是怎么去理解呢？
+
+**存在量词消去规则**
+
+$(\exists x) P(x) \Rightarrow P(c)$
+
+c是一个个体常项
+
+<u>条件：</u>
+
+1.  <u>  **$(\exists x) P(x)$ 中没有自由变量的出现**，比如对于任意的y,确实会存在x满足某条性质，但是这个x的范围是y 的函数，这样就推不出一个固定的c 了</u>
+
+2. <u>**P(x)里面不能含有c**,如果含有c,和上面一样，确实会存在x满足某条性质，但是这个x的范围是c 的函数，这样就推不出一个固定的c</u> 
+
+
+
+### Resolution Reasoning(归结推理法)
+
+原理：(𝑷∨𝑸)∧(¬𝑷∨𝑹) ⟹𝑸∨𝐑
+
+![IMG_EF377F28A9D0-1](NoteOfDiscreteMathematics.assets/IMG_EF377F28A9D0-1.jpeg)
+
+### Prenex Normal Form(前束范式)
+
+任意的一个式子可以转换成前束范式
+
+#### Equivalence(等值)
+
+1. 每次穿过量词，存在任意变化
+
+$$
+\begin{array}{l}
+\neg(\forall x) P(x)=(\exists x) \neg P(x) \\
+\neg(\exists x) P(x)=(\forall x) \neg P(x)
+\end{array}
+$$
+
+2. Distributive Law(分配律):
+
+$$
+\begin{array}{l}
+(\forall x)(P(x) \vee q)=(\forall x) P(x) \vee q \\
+(\exists x)(P(x) \vee q)=(\exists x) P(x) \vee q \\
+(\forall x)(P(x) \wedge q)=(\forall x) P(x) \wedge q \\
+(\exists x)(P(x) \wedge q)=(\exists x) P(x) \wedge q
+\end{array}
+$$
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-21 上午10.39.13-3247980.png" alt="截屏2020-10-21 上午10.39.13" style="zoom:33%;" />
+
+PS：q 可以用$(\forall y) P(y)$或者$(\exists y) P(y)$替换
+$$
+\begin{array}{l}
+(\forall x)(P(x) \wedge Q(x))=(\forall x) P(x) \wedge(\forall x) Q(x) \\
+(\exists x)(P(x) \vee Q(x))=(\exists x) P(x) \vee(\exists x) Q(x)
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+(\forall x)(P(x) \vee Q(x)) \Leftarrow (\forall x) P(x) \vee(\forall x) Q(x) \\
+(\exists x)(P(x) \wedge Q(x)) \Rightarrow(\exists x) P(x) \wedge(\exists x) Q(x)
+\end{array}
+$$
+
+
+
+$$
+\begin{array}{l}
+(\forall x)(\forall y)(P(x) \vee Q(y))=(\forall x) P(x) \vee(\forall x) Q(x) \\
+(\exists x)(\exists y)(P(x) \wedge Q(y))=(\exists x) P(x) \wedge(\exists x) Q(x)
+\end{array}
+$$
+
+$$
+\begin{aligned}
+proof\quad
+&(\forall x) P(x) \vee(\forall x) Q(x) \\
+=&(\forall x) P(x) \vee(\forall y) Q(y) \\
+=&(\forall x)(P(x) \vee(\forall y) Q(y)) \\
+=&(\forall x)(\forall y)(P(x) \vee Q(y))
+\end{aligned}
+$$
+
+
+
+### Skolem Normal Form(Skolem标准形)
+
+可满足性等价：开关变量、归结、Skolem 标准型（思考）
+$$
+\begin{array}{l}
+(Z \rightarrow A 1 \wedge A 2 \wedge A 3) \wedge 
+(\neg Z \rightarrow B 1 \wedge B 2 \wedge B 3)
+\end{array}
+$$
+
+
+
+
+
+### SMT Slover()
+
+检验是否存在一组解释，使得当前的谓词逻辑为T。
+
+**Eager SMT**
+
+基于SAT求解谓词逻辑
+
+$$
+y=f(z) \wedge x=f(f(z)) \wedge \neg(x=f(y))
+$$
+注意：=的优先级比and 高
+$$
+\begin{array}{l}
+每个函数替换都要加这三个，如果有f，g,要写6个式子\\
+\left((y \leftrightarrow z) \rightarrow\left(f_{y} \leftrightarrow f_{z}\right)\right) \wedge \\
+\left(\left(y \leftrightarrow f_{z}\right) \rightarrow\left(f_{y} \leftrightarrow f_{f z}\right) \wedge\right. \\
+\left(\left(z \leftrightarrow f_{z}\right) \rightarrow\left(f_{z} \leftrightarrow f_{f z}\right)\right) \wedge \\
+
+\left(y \leftrightarrow f_{z}\right) \wedge \\
+\left(x \leftrightarrow f_{f z}\right) \wedge \\
+\neg\left(x \leftrightarrow f_{y}\right)
+\end{array}
+$$
+**Lazy SMT**
+
+<u>步骤：</u>
+
+1. 将原子命题公式转化成命题变量
+2. 放进SAT-Slover进行使用DPLL求解
+3. 过程中调用T-solver进行验证，即时回溯
+4. 得到结论
+
+
+
+
+
+
+
+
+
+![截屏2020-10-25 下午5.42.52](NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.42.52.png)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -924,31 +1228,23 @@ term:个体词/函数
 
 ## question
 
-X1=1^  是个体变相？？？、
+WWF 的两条规则
+
+2). If A and B are WFFs, so are ¬A , (A ∧ B), (A ∨ B), (A → B), and (A ↔ B). And there is no variable **which is bounded in one wff and free in the other wff.**
+
+3). If A is a WFF and x is free in A, then **（∀x） A, （∃x） A** are wffs.
+
+是不是因为 放入之后，必须是一个单元？替换为y 
+
+
+
+手动推理做一遍书上的习题。
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-有开关变量，转化为DNF 之后不成为爆炸（变成3+3），减少了变量
-
-引入的Z 的式子的语意上不一样的，但是可满足性是一样的。
 
 真值表按照一行来算013（看一下）
 
@@ -956,11 +1252,6 @@ X1=1^  是个体变相？？？、
 
 
 
-永真属于可满足？
-
-strawman 算法 最直觉？？
-
-回溯了之后A =T --》A =F ,A 就不是decision literal 
 
 
 
@@ -971,4 +1262,70 @@ strawman 算法 最直觉？？
 
 
 
+
+
+
+
+
+
+## 难题
+
+永真属于可满足？是的
+
+***
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午10.19.17.png" alt="截屏2020-10-09 下午10.19.17" style="zoom:33%;" width=1200/>
+
+永真式不存在主合区范式。
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午10.30.11.png" alt="截屏2020-10-09 下午10.30.11" style="zoom:33%;" width=1200 />即为变量的个数
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-09 下午11.04.10.png" alt="截屏2020-10-09 下午10.30.43" style="zoom:25%;"  width=1200 />如何证明？
+
+
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-10 上午9.05.34-2292023.png" alt="截屏2020-10-10 上午9.05.34" style="zoom:33%;" width=1200/> 求范式，不唯一：列写真值表，利用短路求值快速判断。
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-10 上午9.08.08.png" alt="截屏2020-10-10 上午9.08.08" style="zoom:33%;" width=1200 />求主析取范式，利用短路求值快速写出真值表，从T列些得到，求主合取范式，从F 列写得到。
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-10 上午9.14.06.png" alt="截屏2020-10-10 上午9.14.06" style="zoom: 33%;" width=1200 />见归结证明法。
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-10 上午9.16.37.png" alt="截屏2020-10-10 上午9.16.37" style="zoom:33%;" width=1200 /> 
+
+－A VB 可满足 ，则－A或者B可满足
+－*BV *A   可满足则－*B或者 *A可满足
+－*B与**B同可满足
+*A与-A同可满足
+所以上面的可以推出下面
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-11 上午11.07.04.png" alt="截屏2020-10-11 上午11.07.04" style="zoom:33%;" width=1200/>
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-11 上午11.33.36.png" alt="截屏2020-10-11 上午11.33.36" style="zoom:33%;"  width=1200/>不用V？原因是？
+
+---
+
+$(\forall x) P(x) \rightarrow P(y)$
+上面这个公式是可渭足的。
+A True
+B Fase
+
+key：True  这个是普遍成立的，重要的是对于$(\forall x) P(x)$ 的理解，这里是只要一个是F ，那么整个就是F，所以只有 全维T，整个才是T，自然T推出T
+
+---
 
