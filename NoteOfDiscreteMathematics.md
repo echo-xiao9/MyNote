@@ -2,6 +2,10 @@
 
 
 
+
+
+
+
 # Note of Discrete Mathematics
 
 [TOC]
@@ -873,6 +877,10 @@ Backtrack rule 是说如果发现当前 CNF 的某个子句真值是 F，也就�
 
 Because𝑨⟹𝑩iff𝑨∧¬𝑩 isa contradiction. We can prove 𝑨 ∧ ¬𝑩 is a contradiction.
 
+Forformula   𝐴=𝑃∨𝑄  and   𝐵=¬𝑃∨𝑅   ,   𝑅(𝐴,𝐵)=𝑄∨𝑅   is aresolvent( 归结式) of 𝐴 and 𝐵
+
+联想开关变量 （𝑃∨𝑄）∧（¬𝑃∨𝑅）和𝑄∨𝑅  同可满足性。
+
 
 
 ## 4.谓词逻辑
@@ -1188,33 +1196,49 @@ $$
 3. 过程中调用T-solver进行验证，即时回溯
 4. 得到结论
 
+![截屏2020-10-25 下午5.48.46](NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.48.46.png)
+
+![截屏2020-10-25 下午5.51.40](NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.51.40.png)
+
+**Incremental T-solver**
+
+dpll 的时候一部分带入Tsolver发现了矛盾，可以及时停止。
+
+**Theory Propagation**
+
+使用T solver推出其他命题的值。
+
+![截屏2020-10-25 下午5.55.33](NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.55.33.png)
 
 
 
+### T solver 举例EUF 
+
+**equality and uninterpreted function**
 
 
 
+```C++
+While formulas are not empty: 
+	remove a=b;
+	merge(a, b);
+If find(a) = find(b)for some a≠b
+	return false; 
+else
+	return true;
+```
 
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.59.37.png" alt="截屏2020-10-25 下午5.59.37" style="zoom:50%;" />
 
-![截屏2020-10-25 下午5.42.52](NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午5.42.52.png)
+如果有函数：只要掌握了输入的参数相同则函数值相同。把这些函数归类。如果发现一个圈圈里面的不等则不行。
 
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午6.03.02.png" alt="截屏2020-10-25 下午6.03.02" style="zoom:50%;" />
 
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午6.00.08.png" alt="截屏2020-10-25 下午6.00.08" style="zoom:50%;" />
 
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午6.00.26-3620113.png" alt="截屏2020-10-25 下午6.00.26" style="zoom:50%;" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
 
 
 
@@ -1328,4 +1352,26 @@ B Fase
 key：True  这个是普遍成立的，重要的是对于$(\forall x) P(x)$ 的理解，这里是只要一个是F ，那么整个就是F，所以只有 全维T，整个才是T，自然T推出T
 
 ---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午6.52.23.png" alt="截屏2020-10-25 下午6.52.23" style="zoom: 33%;"  width=1200/> 
+
+1. 谓词逻辑的任意公式A都可化成相应的$\exist$前束范式并且A是普遍有效的当且仅当其$\exist$前束范式是普遍有效的。
+
+2. 谓词逻辑的任意公式A都可化成相应的Skolem标准形，A是不可满足的当且仅当Skolem标准形是不可满足的。
+
+   
+
+   <img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午7.11.25.png" alt="截屏2020-10-25 下午7.11.25" style="zoom:33%;" width=1200 />
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午7.33.35.png" alt="截屏2020-10-25 下午7.33.35" style="zoom:50%;" />
+
+注意异同
+
+---
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午7.22.17-3625054.png" alt="截屏2020-10-25 下午7.22.17" style="zoom:33%;" />本题注意充分不必要。
+
+![IMG_073E6BE598D9-1](NoteOfDiscreteMathematics.assets/IMG_073E6BE598D9-1.jpeg)
+
+<img src="NoteOfDiscreteMathematics.assets/截屏2020-10-25 下午7.29.52.png" alt="截屏2020-10-25 下午7.29.52" style="zoom:25%;" width=1200 /> <img src="NoteOfDiscreteMathematics.assets/IMG_D5BF22D25E3C-1.jpeg" alt="IMG_D5BF22D25E3C-1" style="zoom:33%;" height =600 />
 
