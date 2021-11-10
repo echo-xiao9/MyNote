@@ -1,4 +1,6 @@
 # MyNote
+SJTU SE笔记发布
+
 ## 2020 
 - [理论力学](https://github.com/echo-xiao9/MyNote/blob/master/理论力学笔记.md)
 - [大学物理](https://github.com/echo-xiao9/MyNote/blob/master/大学物理笔记.md)
