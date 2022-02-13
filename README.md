@@ -15,17 +15,17 @@ SJTU SE笔记发布
 > SE343 - 企业级应用系统体系架构
 
 - [AEA-Notion 笔记合集](https://pitch-circle-003.notion.site/AEA-d8cbc480501341d6a472678961e93490)
-- [AEA_final.md]()
-- [AEA_final.pdf]()
-- [bookStore项目代码]()
+- [AEA_final.md](https://github.com/echo-xiao9/MyNote/blob/master/AEA/AEA_final.md)
+- [AEA_final.pdf](https://github.com/echo-xiao9/MyNote/blob/master/AEA/AEA_final.pdf)
+- [bookStore项目代码](https://github.com/echo-xiao9/E-BookStore.git)
 
 ### Machine Learning
 
 > SE125 - 机器学习
 
-- [ML_final.md]()
+- [ML_final.md](https://github.com/echo-xiao9/MyNote/blob/master/ML/ML_final.md)
 - [ML-Notion笔记合集](https://pitch-circle-003.notion.site/ML-4f5555050e724ee2aa349f7e7392fc0f)
-- [ML大作业代码]()
+- [ML大作业代码-AI作诗&朴素贝叶斯和逻辑回归](https://github.com/echo-xiao9/SE125-Machine-Learning)
 
 ### CSE (chfs lab, MIT 6.824)
 
